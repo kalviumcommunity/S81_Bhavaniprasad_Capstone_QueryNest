@@ -15,6 +15,8 @@ const generateToken = (id, role, name, email) => {
   return jwt.sign({ id, role, name, email }, process.env.JWT_SECRET, { expiresIn: '7d' });
 };
 
+
+
 userRoute.post("/signup", catchAsyncError(async (req, res, next) => {
   const { name, email, password, role } = req.body;
   if (!name || !email || !password) {
@@ -149,7 +151,6 @@ userRoute.post("/message", catchAsyncError(async (req, res, next) => {
     return next(new Errorhadler("Failed to send notification email", 500));
   }
 }));
-
 
 
 userRoute.get("/users", catchAsyncError(async (req, res, next) => {

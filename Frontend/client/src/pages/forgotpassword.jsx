@@ -7,11 +7,10 @@ function EmailVerification() {
   const [showOtp, setShowOtp] = useState(false);
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [message, setMessage] = useState('');
-  const [messageType, setMessageType] = useState(''); // 'success' or 'error'
+  const [messageType, setMessageType] = useState('');
   const inputRefs = useRef([]);
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false); // new loading state
-
+  const [loading, setLoading] = useState(false);
 
   const showMessage = (text, type = 'error') => {
     setMessage(text);
@@ -20,7 +19,7 @@ function EmailVerification() {
 
   const handleSendOtp = async () => {
     if (!email) return showMessage("Please enter your email", 'error');
-  
+
     try {
       setLoading(true);
       const response = await axios.post('http://localhost:8080/user/forgot-password', { email });
@@ -36,7 +35,6 @@ function EmailVerification() {
       setLoading(false);
     }
   };
-  
 
   const handleChange = (index, value) => {
     if (value.length > 1) return;
@@ -76,27 +74,9 @@ function EmailVerification() {
   };
 
   return (
-    <div style={{
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      height: "100vh",
-      width: "100vw",
-      backgroundSize: "100% 100%",
-      backgroundRepeat: "no-repeat",
-      backgroundPosition: "center"
-    }}>
-      <div style={{
-        width: "400px",
-        backgroundColor: "white",
-        borderRadius: "10px",
-        boxShadow: "0px 4px 20px rgba(0,0,0,0.3)",
-        padding: "30px",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center"
-      }}>
-        <h2 style={{ marginBottom: "20px", fontFamily: "Nunito", fontWeight: "bold" }}>
+    <div className="flex items-center justify-center h-screen w-screen bg-cover bg-no-repeat bg-center">
+      <div className="w-[400px] bg-white rounded-lg shadow-xl p-8 flex flex-col items-center">
+        <h2 className="mb-5 font-nunito font-bold text-xl">
           Verify Your Email
         </h2>
 
@@ -105,48 +85,34 @@ function EmailVerification() {
           placeholder="Enter email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          style={{
-            width: "100%",
-            padding: "10px",
-            marginBottom: "20px",
-            borderRadius: "5px",
-            border: "1px solid #ccc"
-          }}
+          className="w-full p-2 mb-5 rounded border border-gray-300"
         />
-          {!showOtp && (
-            <button
-              onClick={handleSendOtp}
-              disabled={loading}
-              style={{
-                width: "100%",
-                backgroundColor: loading ? "#93c5fd" : "#2563eb",
-                color: "white",
-                padding: "10px",
-                borderRadius: "5px",
-                border: "none",
-                fontWeight: "bold",
-                cursor: loading ? "not-allowed" : "pointer",
-                marginBottom: "20px"
-              }}
-            >
-              {loading ? "Sending..." : "Send OTP"}
-            </button>
-          )}
-          
+
+        {!showOtp && (
+          <button
+            onClick={handleSendOtp}
+            disabled={loading}
+            className={`w-full py-2 mb-5 rounded font-bold text-white ${
+              loading ? 'bg-blue-300 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
+            }`}
+          >
+            {loading ? "Sending..." : "Send OTP"}
+          </button>
+        )}
+
         {message && (
-          <p style={{
-            color: messageType === 'success' ? "green" : "red",
-            fontWeight: "bold",
-            marginBottom: "20px",
-            textAlign: "center"
-          }}>
+          <p
+            className={`font-bold mb-5 text-center ${
+              messageType === 'success' ? 'text-green-600' : 'text-red-600'
+            }`}
+          >
             {message}
           </p>
         )}
 
         {showOtp && (
           <>
-            <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
+            <div className="flex gap-2 mb-5">
               {otp.map((digit, idx) => (
                 <input
                   key={idx}
@@ -156,29 +122,13 @@ function EmailVerification() {
                   onChange={(e) => handleChange(idx, e.target.value)}
                   onKeyDown={(e) => handleKeyDown(e, idx)}
                   ref={(el) => (inputRefs.current[idx] = el)}
-                  style={{
-                    width: "40px",
-                    height: "40px",
-                    textAlign: "center",
-                    fontSize: "1.5rem",
-                    borderRadius: "5px",
-                    border: "1px solid #ccc"
-                  }}
+                  className="w-10 h-10 text-center text-xl rounded border border-gray-300"
                 />
               ))}
             </div>
             <button
               onClick={handleVerify}
-              style={{
-                width: "100%",
-                backgroundColor: "#16a34a",
-                color: "white",
-                padding: "10px",
-                borderRadius: "5px",
-                border: "none",
-                fontWeight: "bold",
-                cursor: "pointer"
-              }}
+              className="w-full py-2 rounded font-bold text-white bg-green-600 hover:bg-green-700"
             >
               Verify OTP
             </button>

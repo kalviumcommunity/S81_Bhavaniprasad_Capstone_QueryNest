@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-// import {logo, bgimage} from "../assets/image/index";
+// import { logo, bgimage } from "../assets/image/index";
 import GoogleSignInButton from "../components/GoogleButton";
 
 export default function Login() {
@@ -17,17 +17,17 @@ export default function Login() {
 
     const handleLogin = async (e) => {
         e.preventDefault();
-    
+
         if (!isValidEmail(email)) {
             setMessage("Please enter a valid email address.");
             return;
         }
-    
+
         setMessage("Logging you in...");
         const loginData = { email, password };
-    
+
         try {
-            const response = await axios.post("http://localhost:8080/user/login", loginData,{ withCredentials: true });
+            const response = await axios.post("http://localhost:8080/user/login", loginData, { withCredentials: true });
             if (response.data.token) {
                 localStorage.setItem("token", response.data.token);
                 setMessage("Login successful! Redirecting...");
@@ -38,75 +38,40 @@ export default function Login() {
         } catch (error) {
             if (error.response && error.response.status === 401) {
                 setMessage("Invalid email or password.");
-            } else if (error.response ) {
+            } else if (error.response) {
                 setMessage(error.response.data.message || "User not found.");
             } else {
                 setMessage("Something went wrong. Please try again later.");
             }
         }
     };
-    
 
     return (
-        <div style={{
-            display: "flex", 
-            alignItems: "center", 
-            justifyContent: "center", 
-            height: "100vh", 
-            width: "100vw", 
-            // backgroundImage: `url(${bgimage})`,
-            backgroundSize: "100% 100%", 
-            backgroundRepeat: "no-repeat",
-            backgroundPosition: "center"
-        }}>
-            <div style={{
-                display: "flex", 
-                width: "800px", 
-                backgroundColor: "white", 
-                borderRadius: "10px", 
-                boxShadow: "0px 4px 20px rgba(0,0,0,0.3)",
-                overflow: "hidden"
-            }}>
+        <div className="flex items-center justify-center h-screen w-screen bg-cover bg-center">
+            <div className="flex w-[800px] bg-white rounded-lg shadow-lg overflow-hidden">
                 {/* Left Half - Gradient Background */}
-                <div style={{
-                    width: "50%", 
-                    display: "flex", 
-                    flexDirection: "column", 
-                    justifyContent: "center", 
-                    alignItems: "center", 
-                    padding: "30px", 
-                    backgroundImage: "linear-gradient(62deg, #8EC5FC 0%, #e0c3fc 100%)"
-                }}>
-                    {/* <img src={logo} alt="Logo" style={{ width: "100px", height: "100px", borderRadius: "50%", marginBottom: "20px" }} /> */}
-                    <h2 style={{ color: "white", fontWeight: "bold", textAlign: "center" }}>Welcome Back!</h2>
+                <div className="w-1/2 flex flex-col justify-center items-center p-8 bg-gradient-to-r from-[#8EC5FC] to-[#e0c3fc]">
+                    {/* <img src={logo} alt="Logo" className="w-24 h-24 rounded-full mb-5" /> */}
+                    <h2 className="text-white font-bold text-center text-2xl">Welcome Back!</h2>
                 </div>
                 {/* Right Half - Form Fields */}
-                <div style={{
-                    width: "50%", 
-                    display: "flex", 
-                    flexDirection: "column", 
-                    justifyContent: "center", 
-                    padding: "30px", 
-                    textAlign: "center",
-                    backgroundColor: "#f4f4f4"
-                }}>
-                    <h3 style={{ 
-                        fontFamily: "Nunito", 
-                        fontWeight: "bold", 
-                        fontSize: "1.8rem", 
-                        backgroundImage: "linear-gradient(62deg, #8EC5FC 0%, #e0c3fc 100%)", 
-                        WebkitBackgroundClip: "text", 
-                        color: "transparent"
-                    }}>Log in</h3>
-                    {message && <p style={{ color: message.includes("successful") ? "green" : "red", fontWeight: "bold" }}>{message}</p>}
-                    <form onSubmit={handleLogin} style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
+                <div className="w-1/2 flex flex-col justify-center p-8 text-center bg-gray-100">
+                    <h3 className="font-bold text-[1.8rem] bg-gradient-to-r from-[#8EC5FC] to-[#e0c3fc] bg-clip-text text-transparent">
+                        Log in
+                    </h3>
+                    {message && (
+                        <p className={`font-bold mt-2 ${message.includes("successful") ? "text-green-600" : "text-red-600"}`}>
+                            {message}
+                        </p>
+                    )}
+                    <form onSubmit={handleLogin} className="flex flex-col gap-4 mt-4">
                         <input
                             type="email"
                             placeholder="Email ID"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             required
-                            style={{ padding: "12px", borderRadius: "5px", border: "1px solid #ccc", fontSize: "1rem" }}
+                            className="p-3 rounded border border-gray-300 text-base"
                         />
                         <input
                             type="password"
@@ -114,32 +79,25 @@ export default function Login() {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             required
-                            style={{ padding: "12px", borderRadius: "5px", border: "1px solid #ccc", fontSize: "1rem" }}
+                            className="p-3 rounded border border-gray-300 text-base"
                         />
-                        <button type="submit" style={{
-                            padding: "12px", 
-                            borderRadius: "5px", 
-                            backgroundImage: "linear-gradient(62deg, #8EC5FC 0%, #e0c3fc 100%)", 
-                            color: "white", 
-                            fontWeight: "bold", 
-                            cursor: "pointer",
-                            fontSize: "1rem",
-                            transition: "0.3s"
-                        }}
-                        onMouseOver={(e) => e.target.style.opacity = "0.8"}
-                        onMouseOut={(e) => e.target.style.opacity = "1"}
+                        <button
+                            type="submit"
+                            className="p-3 rounded font-bold text-white text-base bg-gradient-to-r from-[#8EC5FC] to-[#e0c3fc] hover:opacity-80 transition-opacity duration-300"
                         >
                             Login
                         </button>
                     </form>
-                    <p style={{ marginTop: "10px", fontSize: "0.9rem" }}>
-                        Don’t have an account? <span style={{ color: "#007BFF", cursor: "pointer", fontWeight: "bold" }} onClick={() => navigate("/signup")}>
+                    <p className="mt-3 text-sm">
+                        Don’t have an account?{" "}
+                        <span
+                            className="text-blue-600 font-bold cursor-pointer"
+                            onClick={() => navigate("/signup")}
+                        >
                             Sign up
                         </span>
                     </p>
-
-
-                    <GoogleSignInButton/>
+                    <GoogleSignInButton />
                 </div>
             </div>
         </div>

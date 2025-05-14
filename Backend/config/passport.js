@@ -1,6 +1,6 @@
 // passport.js
 const passport = require('passport');
-const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const {Strategy:GoogleStrategy} = require('passport-google-oauth20');
 const {UserModel} = require('../Models/userModel');
 const dotenv = require('dotenv');
 
@@ -18,7 +18,7 @@ passport.use(new GoogleStrategy({
     // console.log("accesstoken:", accessToken);
     const email = profile.emails[0].value;
     const name = profile.displayName;
-
+  
     let user = await UserModel.findOne({ email });
 
     if (!user) {
@@ -26,7 +26,7 @@ passport.use(new GoogleStrategy({
         name,
         email,
         password: '', // Google login doesn't need a password
-        role: ['Organizer', 'user'],
+        role: ['user'],
         isActivated: true,
       });
       await user.save();
@@ -39,3 +39,6 @@ passport.use(new GoogleStrategy({
     return done(err, null);
   }
 }));
+
+
+module.exports=passport

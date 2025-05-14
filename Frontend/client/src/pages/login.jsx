@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 // import {logo, bgimage} from "../assets/image/index";
-// import GoogleSignInButton from "../components/GoogleSignInButton";
+import GoogleSignInButton from "../components/GoogleButton";
 
 export default function Login() {
     const [email, setEmail] = useState("");
@@ -27,18 +27,18 @@ export default function Login() {
         const loginData = { email, password };
     
         try {
-            const response = await axios.post("https://eventhon.onrender.com/api/auth/login", loginData,{ withCredentials: true });
+            const response = await axios.post("http://localhost:8080/user/login", loginData,{ withCredentials: true });
             if (response.data.token) {
                 localStorage.setItem("token", response.data.token);
                 setMessage("Login successful! Redirecting...");
-                setTimeout(() => navigate("/"), 2000);
+                setTimeout(() => navigate("/signup"), 2000);
             } else {
                 setMessage("Invalid email or password.");
             }
         } catch (error) {
             if (error.response && error.response.status === 401) {
                 setMessage("Invalid email or password.");
-            } else if (error.response && error.response.status === 404) {
+            } else if (error.response ) {
                 setMessage(error.response.data.message || "User not found.");
             } else {
                 setMessage("Something went wrong. Please try again later.");
@@ -139,7 +139,7 @@ export default function Login() {
                     </p>
 
 
-                    {/* <GoogleSignInButton/> */}
+                    <GoogleSignInButton/>
                 </div>
             </div>
         </div>

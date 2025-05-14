@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 // import {logo, bgimage} from "../assets/image/index";
-// import GoogleSignInButton from "../components/GoogleSignInButton";
+import GoogleSignInButton from "../components/GoogleButton";
 
 
 export default function Signup() {
@@ -31,7 +31,7 @@ export default function Signup() {
     
         try {
             const res = await axios.post(
-                "https://eventhon.onrender.com/api/auth/register",
+                "http://localhost:8080/user/signup",
                 formData,
                 { withCredentials: true }
             );
@@ -127,7 +127,7 @@ export default function Signup() {
                         />
 
                         {/* Role toggle checkbox */}
-                        <label style={{ fontSize: "0.9rem", textAlign: "left" }}>
+                        {/* <label style={{ fontSize: "0.9rem", textAlign: "left" }}>
                             <input
                                 type="checkbox"
                                 checked={role.includes("Organizer")}
@@ -140,7 +140,7 @@ export default function Signup() {
                                 }}
                             />{" "}
                             Check if you want to host events on our platform
-                        </label>
+                        </label> */}
 
                         <button type="submit" style={{
                             padding: "12px",
@@ -162,7 +162,7 @@ export default function Signup() {
                         </span>
                     </p>
 
-                    {/* <GoogleSignInButton/> */}
+                    <GoogleSignInButton/>
                 </div>
             </div>
         </div>

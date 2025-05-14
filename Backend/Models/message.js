@@ -2,6 +2,11 @@ const mongoose = require('mongoose');
 
 const messageSchema = new mongoose.Schema(
     {
+      title: {
+        type: String,
+        required: true,
+        trim: true
+      },
       sender: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'user',
@@ -15,17 +20,21 @@ const messageSchema = new mongoose.Schema(
         type: String,
         required: true
       },
-      upvote: {
-          type:Number,
+      photo:{
+        type:String,
       },
-      share: {
-          type:Number,
-      }
-      
+      upvote: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'user',
+      }],
+      share: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'user',
+      }]
     },
     {
       timestamps: true // adds createdAt and updatedAt
     }
   );
-
-module.exports = mongoose.model('Message', messageSchema);
+const Question =mongoose.model("Message",messageSchema)
+module.exports = {Question}

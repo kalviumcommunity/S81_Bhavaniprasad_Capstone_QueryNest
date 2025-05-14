@@ -18,7 +18,7 @@ const OtpVerifyPage = () => {
   }, [email]);
 
   const handleChange = (e, index) => {
-    const value = e.target.value.replace(/\D/, ''); // only digits
+    const value = e.target.value.replace(/\D/, '');
     const newOtp = [...otp];
     newOtp[index] = value;
     setOtp(newOtp);
@@ -65,35 +65,15 @@ const OtpVerifyPage = () => {
   };
 
   return (
-    <div style={{
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      height: "100vh",
-      width: "100vw",
-      backgroundSize: "100% 100%",
-      backgroundRepeat: "no-repeat",
-      backgroundPosition: "center"
-    }}>
-      <div style={{
-        width: "400px",
-        backgroundColor: "white",
-        borderRadius: "10px",
-        boxShadow: "0px 4px 20px rgba(0,0,0,0.3)",
-        padding: "30px",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center"
-      }}>
-        <h2 style={{ marginBottom: "20px", fontFamily: "Nunito", fontWeight: "bold" }}>
-          OTP Verification
-        </h2>
+    <div className="flex items-center justify-center h-screen w-screen bg-cover bg-no-repeat bg-center">
+      <div className="w-[400px] bg-white rounded-lg shadow-lg p-8 flex flex-col items-center">
+        <h2 className="mb-5 font-nunito font-bold text-2xl">OTP Verification</h2>
 
         <form
-          style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "20px" }}
+          className="flex flex-col items-center gap-5"
           onSubmit={(e) => e.preventDefault()}
         >
-          <div style={{ display: "flex", gap: "10px" }}>
+          <div className="flex gap-2.5">
             {otp.map((digit, index) => (
               <input
                 key={index}
@@ -103,27 +83,19 @@ const OtpVerifyPage = () => {
                 onChange={(e) => handleChange(e, index)}
                 onKeyDown={(e) => handleKeyDown(e, index)}
                 maxLength="1"
-                ref={(el) => inputRefs.current[index] = el}
+                ref={(el) => (inputRefs.current[index] = el)}
                 autoFocus={index === 0}
-                style={{
-                  width: "40px",
-                  height: "40px",
-                  textAlign: "center",
-                  fontSize: "1.5rem",
-                  borderRadius: "5px",
-                  border: "1px solid #ccc"
-                }}
+                className="w-10 h-10 text-center text-2xl rounded border border-gray-300"
               />
             ))}
           </div>
 
-          {loading && <p style={{ color: "blue" }}>Verifying...</p>}
+          {loading && <p className="text-blue-600">Verifying...</p>}
           {message && (
             <p
-              style={{
-                color: message.toLowerCase().includes('success') ? "green" : "red",
-                fontWeight: "bold"
-              }}
+              className={`font-bold ${
+                message.toLowerCase().includes('success') ? 'text-green-600' : 'text-red-600'
+              }`}
             >
               {message}
             </p>

@@ -13,9 +13,9 @@ require('dotenv').config();
 const userRoute = express.Router();
 const otpStore = new Map();
 
-const generateToken = (id, role, name, email) => {
-  return jwt.sign({ id, role, name, email }, process.env.JWT_SECRET, { expiresIn: '7d' });
-};
+  const generateToken = (id, role, name, email) => {
+    return jwt.sign({ id, role, name, email }, process.env.JWT_SECRET, { expiresIn: '7d' });
+  };
 
 
   userRoute.post("/signup", catchAsyncError(async (req, res, next) => {
@@ -114,7 +114,7 @@ const generateToken = (id, role, name, email) => {
       return next(new Errorhadler("Password is incorrect", 400));
     }
 
-    const token = generateToken(user._id, user.role, user.name, user.email);
+     const token = generateToken(user._id, user.role, user.name, user.email);
 
     res.cookie("accesstoken", token, {
       httpOnly: true,
@@ -261,7 +261,7 @@ userRoute.get("/users", catchAsyncError(async (req, res, next) => {
 
 
     
-      const token = jwt.sign({ id: existingUser._id, role: existingUser.role }, process.env.JWT_SECRET, { expiresIn: "24h" });
+        const token = jwt.sign({ id: existingUser._id, role: existingUser.role }, process.env.JWT_SECRET, { expiresIn: "24h" });
 
       res.cookie("accesstoken", token, {
         httpOnly: true,

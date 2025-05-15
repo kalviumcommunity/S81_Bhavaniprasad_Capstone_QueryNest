@@ -32,17 +32,17 @@ const Home = () => {
       });
   }, [changed]);
 
-  useEffect(() => {
-    if (token) {
-      try {
-        const decoded = jwtDecode(token);
-        setSender(decoded.id);
-        setRole(decoded.role);
-      } catch (error) {
-        setError('Invalid token. Please log in again.');
+    useEffect(() => {
+      if (token) {
+        try {
+          const decoded = jwtDecode(token);
+          setSender(decoded.id);
+          setRole(decoded.role);
+        } catch (error) {
+          setError('Invalid token. Please log in again.');
+        }
       }
-    }
-  }, [token]);
+    }, [token]);
 
   useEffect(() => {
     if (error) {

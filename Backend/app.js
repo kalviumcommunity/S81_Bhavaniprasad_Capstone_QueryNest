@@ -23,7 +23,7 @@ app.get('/',(req,res)=>{
 
 app.use('/user',userRoute)
 app.use('/ask',messageRoute)
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+  app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 
 

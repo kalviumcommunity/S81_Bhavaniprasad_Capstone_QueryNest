@@ -86,24 +86,24 @@ const Home = () => {
       formData.append('photo', photo);
     }
 
-    try {
-      await axios.post(API, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-        withCredentials: true,
-      });
+      try {
+        await axios.post(API, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+          withCredentials: true,
+        });
 
-      setShowForm(false);
-      setTitle('');
-      setContent('');
-      setPhoto(null);
-      setPhotoPreview(null); // ✅ clear preview
-      setError('');
-      window.location.reload();
-    } catch (error) {
-      setError(error.response?.data?.message || 'Failed to post the question. Please try again.');
-    }
+        setShowForm(false);
+        setTitle('');
+        setContent('');
+        setPhoto(null);
+        setPhotoPreview(null); // ✅ clear preview
+        setError('');
+        window.location.reload();
+      } catch (error) {
+        setError(error.response?.data?.message || 'Failed to post the question. Please try again.');
+      }
   };
 
   return (

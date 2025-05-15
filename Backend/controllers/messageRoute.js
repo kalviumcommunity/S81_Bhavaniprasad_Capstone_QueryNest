@@ -10,24 +10,24 @@ const path =require('path')
 
 
 
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-      cb(null, 'uploads/questions'); 
-    },
-    filename: function (req, file, cb) {
-      const ext = path.extname(file.originalname);
-      cb(null, Date.now() + ext); 
-    }
-  });
-  
-  const upload = multer({ storage });
+  const storage = multer.diskStorage({
+      destination: function (req, file, cb) {
+        cb(null, 'uploads/questions'); 
+      },
+      filename: function (req, file, cb) {
+        const ext = path.extname(file.originalname);
+        cb(null, Date.now() + ext); 
+      }
+    });
+    
+    const upload = multer({ storage });
 
 
 
 
   messageRoute.post(
     "/questions",
-    upload.single("photo"), // ✅ handle file upload with key `photo`
+     upload.single("photo"), // ✅ handle file upload with key `photo`
     catchAsyncError(async (req, res, next) => {
       const { title, content, sender } = req.body;
   
@@ -45,7 +45,7 @@ const storage = multer.diskStorage({
         title,
         content,
         sender,
-        photo: photoFilename, // ✅ Save photo info in the question document
+          photo: photoFilename, // ✅ Save photo info in the question document
       });
   
       const savedQuestion = await newQuestion.save();

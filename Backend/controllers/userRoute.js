@@ -18,113 +18,113 @@ const generateToken = (id, role, name, email) => {
 };
 
 
-userRoute.post("/signup", catchAsyncError(async (req, res, next) => {
-  const { name, email, password, role } = req.body;
+  userRoute.post("/signup", catchAsyncError(async (req, res, next) => {
+    const { name, email, password, role } = req.body;
 
-  if (!name || !email || !password) {
-    return next(new Errorhadler("name, email, and password required", 400));
-  }
+    if (!name || !email || !password) {
+      return next(new Errorhadler("name, email, and password required", 400));
+    }
 
-  const existingUser = await UserModel.findOne({ email });
-  if (existingUser) {
-    return next(new Errorhadler("User already exists", 409));
-  }
+    const existingUser = await UserModel.findOne({ email });
+    if (existingUser) {
+      return next(new Errorhadler("User already exists", 409));
+    }
 
-  const hashedPassword = await bcrypt.hash(password, 10);
-  const otp = crypto.randomInt(100000, 999999).toString();
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const otp = crypto.randomInt(100000, 999999).toString();
 
-  // Store user data temporarily
-  otpStore.set(email, {
-    otp,
-    name,
-    email,
-    password: hashedPassword,
-    role,
-    expiresAt: Date.now() + 3 * 60 * 1000,
-  });
-
-  try {
-    await sendMail({
+    // Store user data temporarily
+    otpStore.set(email, {
+      otp,
+      name,
       email,
-      subject: "Your OTP for Signup in QueryNest",
-      message: `Your OTP is: ${otp}. It is valid for 3 minutes.`,
+      password: hashedPassword,
+      role,
+      expiresAt: Date.now() + 3 * 60 * 1000,
     });
 
-    res.status(200).json({ success: true, message: 'OTP sent to your email' });
-  } catch (error) {
+    try {
+      await sendMail({
+        email,
+        subject: "Your OTP for Signup in QueryNest",
+        message: `Your OTP is: ${otp}. It is valid for 3 minutes.`,
+      });
+
+      res.status(200).json({ success: true, message: 'OTP sent to your email' });
+    } catch (error) {
+      otpStore.delete(email);
+      return next(new Errorhadler("Failed to send OTP", 500));
+    }
+  }));
+
+
+
+  userRoute.post("/otp-verify", catchAsyncError(async (req, res, next) => {
+    const { email, otp } = req.body;
+
+    if (!email || !otp) {
+      return next(new Errorhadler("Email and OTP are required", 400));
+    }
+
+    const storedData = otpStore.get(email);
+
+    if (!storedData || Date.now() > storedData.expiresAt) {
+      otpStore.delete(email);
+      return next(new Errorhadler("OTP expired or not requested", 404));
+    }
+
+    if (storedData.otp !== otp) {
+      return next(new Errorhadler("Invalid OTP", 400));
+    }
+
+    const { name, password, role } = storedData;
+
+    const newUser = new UserModel({
+      name,
+      email,
+      password,
+      role,
+      isActivated: true,
+    });
+
+    await newUser.save();
     otpStore.delete(email);
-    return next(new Errorhadler("Failed to send OTP", 500));
-  }
-}));
 
-
-
-userRoute.post("/otp-verify", catchAsyncError(async (req, res, next) => {
-  const { email, otp } = req.body;
-
-  if (!email || !otp) {
-    return next(new Errorhadler("Email and OTP are required", 400));
-  }
-
-  const storedData = otpStore.get(email);
-
-  if (!storedData || Date.now() > storedData.expiresAt) {
-    otpStore.delete(email);
-    return next(new Errorhadler("OTP expired or not requested", 404));
-  }
-
-  if (storedData.otp !== otp) {
-    return next(new Errorhadler("Invalid OTP", 400));
-  }
-
-  const { name, password, role } = storedData;
-
-  const newUser = new UserModel({
-    name,
-    email,
-    password,
-    role,
-    isActivated: true,
-  });
-
-  await newUser.save();
-  otpStore.delete(email);
-
-  res.status(200).json({ success: true, message: "Signup successful" });
-}));
+    res.status(200).json({ success: true, message: "Signup successful" });
+  }));
 
 
 
 
-userRoute.post("/login", catchAsyncError(async (req, res, next) => {
-  const { email, password } = req.body;
+  userRoute.post("/login", catchAsyncError(async (req, res, next) => {
+    const { email, password } = req.body;
 
-  if (!email || !password) {
-    return next(new Errorhadler("Email and password are required", 400));
-  }
+    if (!email || !password) {
+      return next(new Errorhadler("Email and password are required", 400));
+    }
 
-  let user = await UserModel.findOne({ email });
+    let user = await UserModel.findOne({ email });
 
-  if (!user || !user.isActivated) {
-    return next(new Errorhadler("Please Signup", 400));
-  }
+    if (!user || !user.isActivated) {
+      return next(new Errorhadler("Please Signup", 400));
+    }
 
-  const isMatch = await bcrypt.compare(password, user.password);
-  if (!isMatch) {
-    return next(new Errorhadler("Password is incorrect", 400));
-  }
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return next(new Errorhadler("Password is incorrect", 400));
+    }
 
-  const token = generateToken(user._id, user.role, user.name, user.email);
+    const token = generateToken(user._id, user.role, user.name, user.email);
 
-  res.cookie("accesstoken", token, {
-    httpOnly: true,
-    secure: false,
-    sameSite: "lax",
-    maxAge: 24 * 60 * 60 * 1000,
-  });
+    res.cookie("accesstoken", token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+      maxAge: 24 * 60 * 60 * 1000,
+    });
 
-  res.status(200).json({ success: true, message: "Login successful", token });
-}));
+    res.status(200).json({ success: true, message: "Login successful", token });
+  }));
 
 
 

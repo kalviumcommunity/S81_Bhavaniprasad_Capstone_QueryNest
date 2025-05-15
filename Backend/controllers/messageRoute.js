@@ -12,11 +12,11 @@ const path =require('path')
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-      cb(null, 'uploads/questions'); // Make sure this folder exists
+      cb(null, 'uploads/questions'); 
     },
     filename: function (req, file, cb) {
       const ext = path.extname(file.originalname);
-      cb(null, Date.now() + ext); // unique filename
+      cb(null, Date.now() + ext); 
     }
   });
   
@@ -57,7 +57,7 @@ const storage = multer.diskStorage({
 
 messageRoute.get('/questions', catchAsyncError(async (req, res, next) => {
     const questions = await Question.find()
-      .populate('sender', 'name') // optional: populate author
+      .populate('sender', 'name') 
       .sort({ createdAt: -1 });
   
     if (!questions || questions.length === 0) {
@@ -79,9 +79,9 @@ messageRoute.get('/questions', catchAsyncError(async (req, res, next) => {
     }
   
     const userId = req.body.id;
-//   console.log(question)
+
     const hasUpvoted = question.upvote.includes(userId);
-//   console.log(userId)
+
     if (hasUpvoted) {
       question.upvote.pull(userId);
     } else {
@@ -113,6 +113,5 @@ messageRoute.get('/questions', catchAsyncError(async (req, res, next) => {
       });
     })
   );
-  
 
 module.exports = { messageRoute };

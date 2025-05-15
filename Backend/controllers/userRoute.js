@@ -58,6 +58,7 @@ userRoute.post("/signup", catchAsyncError(async (req, res, next) => {
 }));
 
 
+
 userRoute.post("/otp-verify", catchAsyncError(async (req, res, next) => {
   const { email, otp } = req.body;
 
@@ -204,34 +205,6 @@ userRoute.put("/update-password", catchAsyncError(async (req, res, next) => {
 }));
 
 
-
-
-
-
-
-// userRoute.post("/message", catchAsyncError(async (req, res, next) => {
-//   const { message } = req.body;
-
-//   if (!message) {
-//     return next(new Errorhadler("Please write your question", 400));
-//   }
-
-//   const newMessage = new messageModel({ message });
-//   await newMessage.save();
-
-//   try {
-//     await sendMail({
-//       email: process.env.ADMIN_NAME,
-//       subject: "New Question Posted",
-//       message: `A new question has been posted: ${message}`,
-//     });
-//     res.status(200).json({ success: true, message: "Message posted and email sent" });
-//   } catch (error) {
-//     return next(new Errorhadler("Failed to send notification email", 500));
-//   }
-// }));
-
-
 userRoute.get("/users", catchAsyncError(async (req, res, next) => {
   const token = req.cookies.accesstoken || req.headers.authorization?.split(" ")[1];
 
@@ -262,6 +235,7 @@ const googleAuthCallback = async (req, res) => {
     const { profile, user } = req.user;
 
     const { displayName, emails } = profile;
+
     if (!emails || emails.length === 0) {
       return res.status(400).json({ message: 'Email is required for authentication' });
     }
@@ -273,6 +247,7 @@ const googleAuthCallback = async (req, res) => {
     
 
     let existingUser = await UserModel.findOne({ email });
+
     if (!existingUser) {
       existingUser = new UserModel({
         name,

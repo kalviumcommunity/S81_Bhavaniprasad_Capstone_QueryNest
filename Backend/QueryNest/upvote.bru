@@ -1,0 +1,15 @@
+meta {
+  name: upvote
+  type: http
+  seq: 6
+}
+
+put {
+  url: http://localhost:8080/ask/questions/upvote/:id
+  body: none
+  auth: inherit
+}
+
+params:path {
+  id: 
+}

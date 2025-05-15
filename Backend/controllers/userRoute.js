@@ -180,29 +180,29 @@ userRoute.post("/verify-forgot-otp", catchAsyncError(async (req, res, next) => {
   res.status(200).json({ success: true, message: "OTP verified. You can now reset your password." });
 }));
 
-userRoute.put("/update-password", catchAsyncError(async (req, res, next) => {
-  const { email, password } = req.body;
+  userRoute.put("/update-password", catchAsyncError(async (req, res, next) => {
+    const { email, password } = req.body;
 
-  if (!email || !password)
-    return next(new Errorhadler("Email and new password are required", 400));
+    if (!email || !password)
+      return next(new Errorhadler("Email and new password are required", 400));
 
-  const storedData = otpStore.get(`forgot-${email}`);
-  if (!storedData || !storedData.isVerified)
-    return next(new Errorhadler("OTP verification required", 403));
+    const storedData = otpStore.get(`forgot-${email}`);
+    if (!storedData || !storedData.isVerified)
+      return next(new Errorhadler("OTP verification required", 403));
 
-  const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-  const user = await UserModel.findOneAndUpdate(
-    { email },
-    { password: hashedPassword }
-  );
+    const user = await UserModel.findOneAndUpdate(
+      { email },
+      { password: hashedPassword }
+    );
 
-  if (!user) return next(new Errorhadler("User not found", 404));
+    if (!user) return next(new Errorhadler("User not found", 404));
 
-  otpStore.delete(`forgot-${email}`);
+    otpStore.delete(`forgot-${email}`);
 
-  res.status(200).json({ success: true, message: "Password updated successfully" });
-}));
+    res.status(200).json({ success: true, message: "Password updated successfully" });
+  }));
 
 
 userRoute.get("/users", catchAsyncError(async (req, res, next) => {

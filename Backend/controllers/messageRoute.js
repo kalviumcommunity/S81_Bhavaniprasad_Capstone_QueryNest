@@ -72,30 +72,30 @@ messageRoute.get('/questions', catchAsyncError(async (req, res, next) => {
   }));
 
 
-  messageRoute.put('/questions/upvote/:id', catchAsyncError(async (req, res, next) => {
-    const question = await Question.findById(req.params.id);
-    if (!question) {
-      return next(new ErrorHandler('Question not found', 404));
-    }
-  
-    const userId = req.body.id;
+    messageRoute.put('/questions/upvote/:id', catchAsyncError(async (req, res, next) => {
+      const question = await Question.findById(req.params.id);
+      if (!question) {
+        return next(new ErrorHandler('Question not found', 404));
+      }
+    
+      const userId = req.body.id;
 
-    const hasUpvoted = question.upvote.includes(userId);
+      const hasUpvoted = question.upvote.includes(userId);
 
-    if (hasUpvoted) {
-      question.upvote.pull(userId);
-    } else {
-      question.upvote.push(userId);
-    }
-  
-    await question.save();
-  
-    res.status(200).json({
-      success: true,
-      message: hasUpvoted ? 'Upvote removed' : 'Upvoted successfully',
-      totalUpvotes: question.upvote.length
-    });
-  }));
+      if (hasUpvoted) {
+        question.upvote.pull(userId);
+      } else {
+        question.upvote.push(userId);
+      }
+    
+      await question.save();
+    
+      res.status(200).json({
+        success: true,
+        message: hasUpvoted ? 'Upvote removed' : 'Upvoted successfully',
+        totalUpvotes: question.upvote.length
+      });
+    }));
 
 
   messageRoute.delete(
